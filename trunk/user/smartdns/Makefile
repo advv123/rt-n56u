@@ -1,31 +1,31 @@
-SRC_NAME = smartdns-Release31
-THISDIR = $(shell pwd)
+# SmartDNS for Padavan
+# 升级到 Release47
 
-all: extract_test config_test
-	$(MAKE) -C $(SRC_NAME)
+SRC_NAME = smartdns-Release47
+SRC_URL  = https://github.com/pymumu/smartdns/archive/refs/tags/Release47.tar.gz
 
-extract_test:
-	( if [ ! -d $(SRC_NAME) ]; then \
-		tar zxf $(SRC_NAME).tar.gz ; \
-	fi )
+all:
+    @echo "Nothing to build for SmartDNS"
 
-config_test:
-	( if [ -f ./config_done ]; then \
-		echo "the same configuration"; \
-	else \
-		touch config_done; \
-	fi )
+download:
+    @echo "Downloading SmartDNS $(SRC_NAME)..."
+    @mkdir -p dl
+    @[ -f dl/$(SRC_NAME).tar.gz ] || \
+        wget -O dl/$(SRC_NAME).tar.gz $(SRC_URL)
+
+romfs: download
+    @echo "Installing SmartDNS into firmware..."
+    @tar -xzf dl/$(SRC_NAME).tar.gz -C dl
+    @mkdir -p $(ROMFSDIR)/usr/bin
+    @cp -f dl/$(SRC_NAME)/src/smartdns $(ROMFSDIR)/usr/bin/smartdns
+    @chmod 755 $(ROMFSDIR)/usr/bin/smartdns
+    # 安装启动脚本和默认配置
+    @cp -f $(THISDIR)/smartdns.sh $(ROMFSDIR)/usr/bin/smartdns.sh
+    @chmod 755 $(ROMFSDIR)/usr/bin/smartdns.sh
+    @$(ROMFSINST) /etc_ro/smartdns_address.conf
+    @$(ROMFSINST) /etc_ro/smartdns_blacklist-ip.conf
+    @$(ROMFSINST) /etc_ro/smartdns_custom.conf
+    @$(ROMFSINST) /etc_ro/smartdns_whitelist-ip.conf
 
 clean:
-	if [ -f $(SRC_NAME)/Makefile ] ; then \
-		$(MAKE) -C $(SRC_NAME) clean ; \
-	fi ; \
-	rm -f config_done
-
-romfs:
-	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/src/smartdns /usr/bin/smartdns
-	$(ROMFSINST) -p +x $(THISDIR)/smartdns.sh /usr/bin/smartdns.sh
-	$(ROMFSINST) /etc_ro/smartdns_address.conf
-	$(ROMFSINST) /etc_ro/smartdns_blacklist-ip.conf
-	$(ROMFSINST) /etc_ro/smartdns_custom.conf
-	$(ROMFSINST) /etc_ro/smartdns_whitelist-ip.conf
+    @rm -rf dl
