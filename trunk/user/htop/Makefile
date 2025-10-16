@@ -1,5 +1,5 @@
 SRC_NAME = htop-3.4.1
-SRC_URL = https://codeload.github.com/htop-dev/htop/tar.gz/refs/tags/3.4.1
+SRC_URL = https://codeload.github.com/htop-dev/htop/tar.gz/refs/tags/3.4.1.tar.gz
 THISDIR = $(shell pwd)
 
 all: download_test extract_test config_test
