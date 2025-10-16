@@ -1,5 +1,5 @@
-SRC_NAME = htop-3.3.0
-SRC_URL = https://github.com/htop-dev/htop/archive/refs/tags/3.3.0.tar.gz
+SRC_NAME = htop-2.2.0
+SRC_URL = https://github.com/htop-dev/htop/archive/refs/tags/2.2.0.tar.gz
 THISDIR = $(shell pwd)
 
 all: download_test extract_test config_test
